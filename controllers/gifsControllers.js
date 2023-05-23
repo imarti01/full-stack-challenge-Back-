@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { uploadImage } = require('../cloudinary/cloudinary');
 require('dotenv').config();
 const Gif = require('../models/Gif');
+const fs = require('fs-extra');
 
 const addGif = async (req, res) => {
   const token = req.headers['x-token'];
@@ -20,6 +21,7 @@ const addGif = async (req, res) => {
     if (url === '') {
       const resultToUpload = await uploadImage(req.files.file.tempFilePath);
       newGif.url = resultToUpload.secure_url;
+      await fs.unlink(req.files.file.tempFilePath);
     }
     await newGif.save();
     return res.status(200).json({
