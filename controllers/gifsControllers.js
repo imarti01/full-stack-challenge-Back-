@@ -37,6 +37,25 @@ const addGif = async (req, res) => {
   }
 };
 
+const getAllUserGifs = async (req, res) => {
+  const token = req.headers['x-token'];
+  try {
+    const { id } = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userGifs = await Gif.find({ userId: id });
+    return res.status(200).json({
+      ok: true,
+      userGifs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
 module.exports = {
   addGif,
+  getAllUserGifs,
 };
