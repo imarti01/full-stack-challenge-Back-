@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Employee = require('../models/Employee');
+const User = require('../models/User');
 require('dotenv').config();
 
 const checkJWT = async (req, res, next) => {
@@ -13,9 +13,8 @@ const checkJWT = async (req, res, next) => {
 
   try {
     const { id } = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const employee = await Employee.findById(id);
-
-    if (!employee) {
+    const user = await User.findById(id);
+    if (!user) {
       return res.status(401).json({ ok: false, msg: 'Invalid token' });
     }
 
