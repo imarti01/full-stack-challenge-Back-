@@ -23,7 +23,7 @@ const createUser = async (req, res) => {
     const newUser = new User({
       username,
       email,
-      passsword: hash,
+      password: hash,
     });
 
     await newUser.save();
@@ -33,6 +33,41 @@ const createUser = async (req, res) => {
     return res.status(200).json({
       ok: true,
       user: { token, username: newUser.username },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(503).json({
+        ok: false,
+        msg: 'User and password do not match',
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      return res.status(503).json({
+        ok: false,
+        msg: 'User and password do not match',
+      });
+    }
+
+    const token = await generateJWT(user._id);
+
+    return res.status(200).json({
+      ok: true,
+      user: { token, username: user.username },
     });
   } catch (error) {
     console.log(error);
@@ -68,4 +103,5 @@ const loginWithToken = async (req, res) => {
 module.exports = {
   createUser,
   loginWithToken,
+  loginUser,
 };
