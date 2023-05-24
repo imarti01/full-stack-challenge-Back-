@@ -6,6 +6,8 @@ const {
   editGif,
   deleteGif,
   getGifsByTag,
+  getGifsByQuery,
+  getLastUploadedGifs,
 } = require('../controllers/gifsControllers');
 const seedFunction = require('../seed/seedFunction');
 
@@ -17,6 +19,8 @@ router.post('/editGif', checkJWT, editGif);
 router.delete('/deleteGif/:gifId', checkJWT, deleteGif);
 
 router.get('/getByTag/:tag', getGifsByTag);
+router.get('/getByQuery/:query', getGifsByQuery);
+router.get('/getLastGifs', getLastUploadedGifs);
 
 router.get('/seed', seedFunction);
 

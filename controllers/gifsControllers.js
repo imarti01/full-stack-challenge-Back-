@@ -103,10 +103,50 @@ const getGifsByTag = async (req, res) => {
   }
 };
 
+const getGifsByQuery = async (req, res) => {
+  const { query } = req.params;
+  const regex = new RegExp(query, 'i');
+  const gifsQuery = {
+    $or: [{ title: { $regex: regex } }, { tags: { $in: regex } }],
+  };
+
+  try {
+    const searchResults = await Gif.find(gifsQuery);
+    return res.status(200).json({
+      ok: true,
+      searchResults,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
+const getLastUploadedGifs = async (req, res) => {
+  try {
+    const lastGifs = await Gif.find().sort({ created_at: -1 }).limit(12);
+    return res.status(200).json({
+      ok: true,
+      lastGifs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
 module.exports = {
   addGif,
   getAllUserGifs,
   editGif,
   deleteGif,
   getGifsByTag,
+  getGifsByQuery,
+  getLastUploadedGifs,
 };

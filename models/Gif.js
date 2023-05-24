@@ -11,6 +11,7 @@ const GifSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+  created_at: { type: String, default: new Date() },
 });
 
 module.exports = model('Gif', GifSchema);
