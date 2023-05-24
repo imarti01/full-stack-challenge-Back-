@@ -55,7 +55,58 @@ const getAllUserGifs = async (req, res) => {
   }
 };
 
+const editGif = async (req, res) => {
+  try {
+    await Gif.findByIdAndUpdate(req.body._id, req.body);
+    return res.status(200).json({
+      ok: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
+const deleteGif = async (req, res) => {
+  const { gifId } = req.params;
+  try {
+    await Gif.findByIdAndDelete(gifId);
+    return res.status(200).json({
+      ok: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
+const getGifsByTag = async (req, res) => {
+  const { tag } = req.params;
+  try {
+    const tagResults = await Gif.find({ tags: { $in: tag } });
+    return res.status(200).json({
+      ok: true,
+      tagResults,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(503).json({
+      ok: false,
+      msg: 'Something happened',
+    });
+  }
+};
+
 module.exports = {
   addGif,
   getAllUserGifs,
+  editGif,
+  deleteGif,
+  getGifsByTag,
 };
