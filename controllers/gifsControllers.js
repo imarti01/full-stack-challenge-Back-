@@ -128,6 +128,7 @@ const getGifsByQuery = async (req, res) => {
 const getLastUploadedGifs = async (req, res) => {
   try {
     const lastGifs = await Gif.find().sort({ created_at: -1 }).limit(12);
+    console.log(lastGifs);
     return res.status(200).json({
       ok: true,
       lastGifs,
